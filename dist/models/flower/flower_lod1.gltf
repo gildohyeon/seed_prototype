@@ -68,20 +68,20 @@
 			"bufferView":6,
 			"componentType":5126,
 			"count":1556,
-			"type":"VEC3",
-			"min":[1,1,1
+			"type":"VEC2",
+			"min":[0.0225030482,0.0230689645
 			],
-			"max":[1,1,1
+			"max":[0.9835006,0.954914987
 			]
 		},
 		{
 			"bufferView":7,
 			"componentType":5126,
 			"count":1556,
-			"type":"VEC2",
-			"min":[0.0225030482,0.0230689645
+			"type":"VEC3",
+			"min":[0,0.0244559124,0
 			],
-			"max":[0.9835006,0.954914987
+			"max":[0.975544095,1,0
 			]
 		},
 		{
@@ -93,22 +93,12 @@
 			],
 			"max":[1
 			]
-		},
-		{
-			"bufferView":9,
-			"componentType":5126,
-			"count":1556,
-			"type":"VEC2",
-			"min":[0.00499999989,0.00500005484
-			],
-			"max":[0.993417323,0.995000005
-			]
 		}
 	],
 	"buffers":[
 		{
 			"uri":"flower_lod1_data.bin",
-			"byteLength":150844,
+			"byteLength":138396,
 			"name":"main_buffer"
 		}
 	],
@@ -151,25 +141,19 @@
 		{
 			"buffer":0,
 			"byteOffset":101052,
-			"byteLength":18672,
+			"byteLength":12448,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteOffset":119724,
-			"byteLength":12448,
+			"byteOffset":113500,
+			"byteLength":18672,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteOffset":132172,
 			"byteLength":6224,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteOffset":138396,
-			"byteLength":12448,
 			"target":34962
 		}
 	],
@@ -184,11 +168,10 @@
 			"primitives":[
 				{
 					"attributes":{
-						"TEXCOORD_1":9,
 						"_Alpha":8,
-						"TEXCOORD_0":7,
-						"_fbx_scale":6,
-						"COLOR_0":5,
+						"TEXCOORD_0":6,
+						"_fbx_scale":5,
+						"COLOR_0":7,
 						"_fbx_rotation":4,
 						"POSITION":3,
 						"NORMAL":2,
@@ -205,11 +188,10 @@
 		{
 			"name":"principledshader1",
 			"pbrMetallicRoughness":{
+				"baseColorFactor":[1,0,0,1
+				],
 				"metallicFactor":0,
-				"roughnessFactor":0.300000012,
-				"baseColorTexture":{
-					"index":0
-				}
+				"roughnessFactor":0.300000012
 			}
 		}
 	],
@@ -217,17 +199,6 @@
 		{
 			"nodes":[0
 			]
-		}
-	],
-	"textures":[
-		{
-			"source":0
-		}
-	],
-	"images":[
-		{
-			"uri":"flower_Albedo.jpg",
-			"mimeType":"image/jpeg"
 		}
 	],
 	"scene":0
