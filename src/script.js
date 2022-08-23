@@ -11,11 +11,11 @@ const scene = new THREE.Scene()
 const canvas = document.querySelector('canvas.webgl')
 
 // object
-const geometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
-const mesh = new THREE.Mesh(geometry, material)
-mesh.position.z = -2
-scene.add(mesh)
+// const geometry = new THREE.BoxGeometry(1, 1, 1)
+// const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+// const mesh = new THREE.Mesh(geometry, material)
+// mesh.position.z = -2
+// scene.add(mesh)
 
 // size
 const sizes = {
