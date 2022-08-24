@@ -33,26 +33,33 @@ scene.add(camera)
 
 // light
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+const ambientLight = new THREE.AmbientLight(0xfff5c9, 0.2)
 scene.add(ambientLight)
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
+const directionalLight = new THREE.DirectionalLight(0xfff5c9, 4)
+directionalLight.position.set(-1,1,0)
 scene.add(directionalLight)
 
+// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 0.2)
+// scene.add(directionalLightHelper)
 
 // environment map
 
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 
 const environmentMapTexture = cubeTextureLoader.load([
-    '/textures/environmentMaps/0/px.jpg',
-    '/textures/environmentMaps/0/nx.jpg',
-    '/textures/environmentMaps/0/py.jpg',
-    '/textures/environmentMaps/0/ny.jpg',
-    '/textures/environmentMaps/0/pz.jpg',
-    '/textures/environmentMaps/0/nz.jpg'
+    '/textures/environmentMaps/1/px.jpg',
+    '/textures/environmentMaps/1/nx.jpg',
+    '/textures/environmentMaps/1/py.jpg',
+    '/textures/environmentMaps/1/ny.jpg',
+    '/textures/environmentMaps/1/pz.jpg',
+    '/textures/environmentMaps/1/nz.jpg'
 ])
 
+
+// BG
+
+scene.background = environmentMapTexture
 
 // textures
 
@@ -76,17 +83,19 @@ flowerColorTexture.wrapT = THREE.RepeatWrapping
 
 
 
+
+
 // gltf
 
 const gltfLoader = new GLTFLoader()
+
+let flower = null
 
 gltfLoader.load(
     'models/flower/flower_lod1.gltf',
     (gltf) => {
 
-        console.log(gltf)
-
-        const flower = gltf.scene.children[0]
+        flower = gltf.scene.children[0]
         flower.scale.set(0.01, 0.01, 0.01)
         flower.position.y = -0.7
         
@@ -99,8 +108,8 @@ gltfLoader.load(
         flowerMaterial.ior = 2.5
         flowerMaterial.clearcoat = 1
         flowerMaterial.transparent = true
-        flowerMaterial.transmission = .8
-        flowerMaterial.thickness = 0
+        flowerMaterial.transmission = 0.9
+        flowerMaterial.thickness = 0.1
         flowerMaterial.alphaMap = flowerAlphaTexture
         flowerMaterial.normalMap = flowerNormalTexture
         flowerMaterial.envMap = environmentMapTexture
@@ -110,9 +119,10 @@ gltfLoader.load(
 
         scene.add(flower)
 
-        
     }
 )
+
+
 
 
 
@@ -127,6 +137,49 @@ renderer.render(scene, camera)
 // controls
 
 const controls = new OrbitControls(camera, canvas)
+
+
+// mouse
+
+const mouse = new THREE.Vector2()
+
+window.addEventListener('mousemove', (event) =>
+{
+    mouse.x = event.clientX / sizes.width * 2 - 1
+    mouse.y = - (event.clientY / sizes.height) * 2 + 1
+
+})
+
+
+
+// raycaster
+
+const interaction = () => 
+{
+
+    const raycaster = new THREE.Raycaster()
+    raycaster.setFromCamera(mouse, camera)
+
+    if(flower){
+        const intersect = raycaster.intersectObject(flower)
+
+            if(intersect.length){
+                const randomcolor = '#' + Math.round(Math.random() * 0xffffff).toString(16)
+                flower.material.color.set(randomcolor)
+                }
+        }
+    
+}
+
+
+// click
+
+window.addEventListener('click', () =>
+{
+    interaction()
+})
+
+
 
 
 
