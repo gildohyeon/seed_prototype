@@ -89,15 +89,19 @@ flowerColorTexture.wrapT = THREE.RepeatWrapping
 
 const gltfLoader = new GLTFLoader()
 
+let flowerScene = null
 let flower = null
+let mixer = null
 
 gltfLoader.load(
     'models/flower/flower_lod1.gltf',
     (gltf) => {
 
-        flower = gltf.scene.children[0]
-        flower.scale.set(0.01, 0.01, 0.01)
-        flower.position.y = -0.7
+
+        gltf.scene.scale.set(0.01, 0.01, 0.01)
+        gltf.scene.position.y = -0.7
+        flowerScene = gltf.scene
+        flower = flowerScene.children[1]
         
         const flowerMaterial = new THREE.MeshPhysicalMaterial
         // flowerMaterial.color = new THREE.Color('#ffffff')
@@ -117,10 +121,18 @@ gltfLoader.load(
 
         flower.material = flowerMaterial
 
-        scene.add(flower)
+        scene.add(flowerScene)
+
+        // animations
+
+        mixer = new THREE.AnimationMixer(gltf.scene)
+        const action = mixer.clipAction(gltf.animations[0])
+        action.play()
 
     }
 )
+
+
 
 
 
@@ -163,6 +175,7 @@ const interaction = () =>
     if(flower){
         const intersect = raycaster.intersectObject(flower)
 
+
             if(intersect.length){
                 const randomcolor = '#' + Math.round(Math.random() * 0xffffff).toString(16)
                 flower.material.color.set(randomcolor)
@@ -180,15 +193,23 @@ window.addEventListener('click', () =>
 })
 
 
-
+const clock = new THREE.Clock()
+let previousTime = 0
 
 
 const tick = () =>
 {
-    // const elapsedTime = clock.getElapsedTime()
+    const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - previousTime
+    previousTime = elapsedTime
 
     // Update controls
     controls.update()
+
+    if(mixer)
+    {
+        mixer.update(deltaTime)
+    }
 
     // Render
     renderer.render(scene, camera)
