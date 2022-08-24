@@ -26,7 +26,9 @@ const sizes = {
 // camera
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
-camera.position.z = 2
+camera.position.x = 1.5
+camera.position.y = 
+camera.position.z = 0.2
 
 scene.add(camera)
 
@@ -60,6 +62,7 @@ const environmentMapTexture = cubeTextureLoader.load([
 // BG
 
 scene.background = environmentMapTexture
+
 
 // textures
 
