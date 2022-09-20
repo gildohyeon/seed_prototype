@@ -70,7 +70,7 @@ const textureLoader = new THREE.TextureLoader()
 
 const flowerNormalTexture = textureLoader.load('/models/flower/flower_Normal.jpg')
 const flowerAlphaTexture = textureLoader.load('/models/flower/flower_Opacity.jpg')
-const flowerColorTexture = textureLoader.load('/models/flower/flower_Albedo.jpg')
+const flowerColorTexture = textureLoader.load('/models/flower/hibiscus_color.png')
 
 const repeat = -1
 
@@ -95,21 +95,25 @@ const gltfLoader = new GLTFLoader()
 let flowerScene = null
 let flower = null
 let mixer = null
+let action = null
 
 gltfLoader.load(
-    'models/flower/flower_lod1.gltf',
+    'models/flower/hibiscus.gltf',
     (gltf) => {
 
+        console.log(gltf)
 
-        gltf.scene.scale.set(0.01, 0.01, 0.01)
-        gltf.scene.position.y = -0.7
+
+        gltf.scene.scale.set(3, 3, 3)
+        gltf.scene.position.y = 0
+        gltf.scene.rotation.y = Math.PI / 2
         flowerScene = gltf.scene
         flower = flowerScene.children[1]
         
         const flowerMaterial = new THREE.MeshPhysicalMaterial
-        // flowerMaterial.color = new THREE.Color('#ffffff')
+        flowerMaterial.color = new THREE.Color('#ffffff')
         flowerMaterial.side = THREE.DoubleSide
-        flowerMaterial.map = flowerColorTexture
+        //flowerMaterial.map = flowerColorTexture
         flowerMaterial.metalness = 0
         flowerMaterial.roughness = 0
         flowerMaterial.ior = 2.5
@@ -117,7 +121,7 @@ gltfLoader.load(
         flowerMaterial.transparent = true
         flowerMaterial.transmission = 0.9
         flowerMaterial.thickness = 0.1
-        flowerMaterial.alphaMap = flowerAlphaTexture
+        //flowerMaterial.alphaMap = flowerAlphaTexture
         flowerMaterial.normalMap = flowerNormalTexture
         flowerMaterial.envMap = environmentMapTexture
         flowerMaterial.alphaTest = 0.5
@@ -129,8 +133,10 @@ gltfLoader.load(
         // animations
 
         mixer = new THREE.AnimationMixer(gltf.scene)
-        const action = mixer.clipAction(gltf.animations[0])
-        action.play()
+        action = mixer.clipAction(gltf.animations[0])
+        //action.play()
+
+        
 
     }
 )
@@ -180,8 +186,11 @@ const interaction = () =>
 
 
             if(intersect.length){
-                const randomcolor = '#' + Math.round(Math.random() * 0xffffff).toString(16)
-                flower.material.color.set(randomcolor)
+                //const randomcolor = '#' + Math.round(Math.random() * 0xffffff).toString(16)
+                //flower.material.color.set(randomcolor)
+
+                action.play()
+
                 }
         }
     
