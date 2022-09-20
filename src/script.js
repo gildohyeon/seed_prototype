@@ -2,6 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { SkeletonHelper } from 'three'
 
 
 // scene
@@ -68,9 +69,9 @@ scene.background = environmentMapTexture
 
 const textureLoader = new THREE.TextureLoader()
 
-const flowerNormalTexture = textureLoader.load('/models/flower/flower_Normal.jpg')
-const flowerAlphaTexture = textureLoader.load('/models/flower/flower_Opacity.jpg')
-const flowerColorTexture = textureLoader.load('/models/flower/hibiscus_color.png')
+const flowerNormalTexture = textureLoader.load('/models/flower/hibiscus_normal.png')
+const flowerAlphaTexture = textureLoader.load('/models/flower/hibiscus_alpha.png')
+const flowerColorTexture = textureLoader.load('/models/flower/hibiscus_alpha.png')
 
 const repeat = -1
 
@@ -92,10 +93,11 @@ flowerColorTexture.wrapT = THREE.RepeatWrapping
 
 const gltfLoader = new GLTFLoader()
 
-let flowerScene = null
+let flowerScene = new THREE.Object3D()
 let flower = null
 let mixer = null
 let action = null
+
 
 gltfLoader.load(
     'models/flower/hibiscus.gltf',
@@ -109,19 +111,19 @@ gltfLoader.load(
         gltf.scene.rotation.y = Math.PI / 2
         flowerScene = gltf.scene
         flower = flowerScene.children[1]
-        
+
         const flowerMaterial = new THREE.MeshPhysicalMaterial
         flowerMaterial.color = new THREE.Color('#ffffff')
         flowerMaterial.side = THREE.DoubleSide
-        //flowerMaterial.map = flowerColorTexture
+        flowerMaterial.map = flowerColorTexture
         flowerMaterial.metalness = 0
         flowerMaterial.roughness = 0
-        flowerMaterial.ior = 2.5
+        flowerMaterial.ior = 1.33
         flowerMaterial.clearcoat = 1
         flowerMaterial.transparent = true
         flowerMaterial.transmission = 0.9
-        flowerMaterial.thickness = 0.1
-        //flowerMaterial.alphaMap = flowerAlphaTexture
+        flowerMaterial.thickness = .5
+        flowerMaterial.alphaMap = flowerAlphaTexture
         flowerMaterial.normalMap = flowerNormalTexture
         flowerMaterial.envMap = environmentMapTexture
         flowerMaterial.alphaTest = 0.5
@@ -142,7 +144,7 @@ gltfLoader.load(
 )
 
 
-
+// scene.add(flowerScene)
 
 
 
@@ -189,7 +191,7 @@ const interaction = () =>
                 //const randomcolor = '#' + Math.round(Math.random() * 0xffffff).toString(16)
                 //flower.material.color.set(randomcolor)
 
-                action.play()
+                //action.play()
 
                 }
         }
