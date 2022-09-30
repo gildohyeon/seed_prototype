@@ -94,9 +94,12 @@ flowerColorTexture.wrapT = THREE.RepeatWrapping
 let hibiscus = new Object3D();
 
 let petal = null
+
+let stamen = new Object3D();
 let stamen_center = null
 let stamen_top = null
 let stamen_ring = null
+
 let bud_inner = null
 let bud_outer = null
 
@@ -122,31 +125,45 @@ hibiscusMaterial.clearcoat = 1
 hibiscusMaterial.transparent = true
 hibiscusMaterial.transmission = 0.9
 hibiscusMaterial.thickness = 0.5
+hibiscusMaterial.vertexColors = true;
 hibiscusMaterial.alphaMap = flowerAlphaTexture
 hibiscusMaterial.normalMap = flowerNormalTexture
 hibiscusMaterial.envMap = environmentMapTexture
 hibiscusMaterial.alphaTest = 0.5
 
+const testMaterial = new THREE.MeshStandardMaterial
 
-//         flowerMaterial.color = new THREE.Color('#ffffff')
-//         flowerMaterial.side = THREE.DoubleSide
-//         flowerMaterial.map = flowerColorTexture
-//         flowerMaterial.metalness = 0
-//         flowerMaterial.roughness = 0
-//         flowerMaterial.ior = 1.33
-//         flowerMaterial.clearcoat = 1
-//         flowerMaterial.transparent = true
-//         flowerMaterial.transmission = 0.9
-//         flowerMaterial.thickness = .5
-//         flowerMaterial.alphaMap = flowerAlphaTexture
-//         flowerMaterial.normalMap = flowerNormalTexture
-//         flowerMaterial.envMap = environmentMapTexture
-//         flowerMaterial.alphaTest = 0.5
 
 hibiscusMaterial.onBeforeCompile = (shader) => {
+
+    shader.vertexShader = shader.vertexShader.replace(
+        '#include <common>',
+        `
+        #include <common>
+        float map(float value, float min1, float max1, float min2, float max2)
+        {
+            return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+        }
+        `
+    )
+
     shader.vertexShader = shader.vertexShader.replace(
         '#include <begin_vertex>',
-        hibiscusVertexShader)
+        hibiscusVertexShader
+    )
+
+    shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <common>',
+        `
+        #include <common>
+        `
+    )
+
+    shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <output_fragment>',
+        hibiscusFragmentShader
+    )
+    
 }
 
 // const hibiscusMaterial = new THREE.RawShaderMaterial({
@@ -178,35 +195,45 @@ gltfLoader.load(
     }
 )
 
+const map = (value, min1, max1, min2, max2) => {
+    return min2 + (value - min1) * (max2 - min2) / (max1 - min1)
+}
+
 
 const initial_setting = () => {
 
     //petal
 
-    petal = new THREE.InstancedMesh(petal_geometry, hibiscusMaterial, 5)
+    let petal_count = Math.round(map(Math.random(),0,1,4,6))
 
-    for(let i = 0; i < 5; i++){
+    petal = new THREE.InstancedMesh(petal_geometry, hibiscusMaterial, petal_count)
+
+    for(let i = 0; i < petal_count; i++){
         const position = new THREE.Vector3(
             (Math.random() - 0.5) * 0,
             (Math.random() - 0.5) * 0,
             (Math.random() - 0.5) * 0
         )
 
+
+
         const quaternion = new THREE.Quaternion()
-        quaternion.setFromEuler(new THREE.Euler(
-            0, 
-            0,
-            (Math.PI*2)/5*i
-            ))
-        
+
+        let euler = new THREE.Euler(
+            Math.PI*0.3,
+            Math.PI*0.05,
+            (Math.PI*2)*(i/petal_count),
+            'ZXY')
+
+        quaternion.setFromEuler(euler)
+
         const matrix = new THREE.Matrix4()
         matrix.makeRotationFromQuaternion(quaternion)
         matrix.setPosition(position)
         petal.setMatrixAt(i, matrix)
     }
 
-    petal.scale.set(5, 5, 5)
-    petal.rotation.y = Math.PI / 2
+
 
     // stamen_center
 
@@ -228,14 +255,15 @@ const initial_setting = () => {
     matrix.setPosition(position)
     stamen_center.setMatrixAt(0, matrix)
  
-    stamen_center.scale.set(5, 5, 5)
-    stamen_center.rotation.y = Math.PI / 2
+
 
     // stamen_top
 
-    stamen_top = new THREE.InstancedMesh(stamen_top_geometry, hibiscusMaterial, 4)
+    let stamen_top_count = Math.round(map(Math.random(),0,1,2,6))
 
-    for(let i = 0; i < 4; i++){
+    stamen_top = new THREE.InstancedMesh(stamen_top_geometry, hibiscusMaterial, stamen_top_count)
+
+    for(let i = 0; i < stamen_top_count; i++){
         const position = new THREE.Vector3(
             0,
             0,
@@ -243,30 +271,34 @@ const initial_setting = () => {
         )
 
         const quaternion = new THREE.Quaternion()
-        quaternion.setFromEuler(new THREE.Euler(
-            0, 
+
+        let euler = new THREE.Euler(
             0,
-            0
-            ))
-        
+            0,
+            (Math.PI*2)*(i/stamen_top_count),
+            'ZXY')
+
+        quaternion.setFromEuler(euler)
+
         const matrix = new THREE.Matrix4()
         matrix.makeRotationFromQuaternion(quaternion)
         matrix.setPosition(position)
         stamen_top.setMatrixAt(i, matrix)
     }
 
-    stamen_top.scale.set(5, 5, 5)
-    stamen_top.rotation.y = Math.PI / 2
+
 
     // stamen_ring
 
-    stamen_ring = new THREE.InstancedMesh(stamen_ring_geometry, hibiscusMaterial, 7)
+    let stamen_ring_count = Math.round(map(Math.random(),0,1,5,13))
 
-    for(let i = 0; i < 7; i++){
+    stamen_ring = new THREE.InstancedMesh(stamen_ring_geometry, hibiscusMaterial, stamen_ring_count)
+
+    for(let i = 0; i < stamen_ring_count; i++){
         const position = new THREE.Vector3(
             0,
             0,
-            i*0.01
+            (i/stamen_ring_count)*0.08
         )
 
         const quaternion = new THREE.Quaternion()
@@ -276,7 +308,7 @@ const initial_setting = () => {
             0
             ))
 
-        const instance_scale = (4-i)*0.07 + 1
+        const instance_scale = (stamen_ring_count-i)*0.05 + 0.5
 
         const scale = new THREE.Vector3(
             instance_scale,
@@ -291,39 +323,43 @@ const initial_setting = () => {
         stamen_ring.setMatrixAt(i, matrix)
     }
 
-    stamen_ring.scale.set(5, 5, 5)
-    stamen_ring.rotation.y = Math.PI / 2
 
     bud_inner = new THREE.InstancedMesh(bud_inner_geometry, hibiscusMaterial, 6)
-    bud_inner.scale.set(10, 10, 10)
-    bud_inner.rotation.y = Math.PI / 2
+
     
     bud_outer = new THREE.InstancedMesh(bud_outer_geometry, hibiscusMaterial, 6)
-    bud_outer.scale.set(10, 10, 10)
-    bud_outer.rotation.y = Math.PI / 2
+    
 
 
 
 
-    petal.material = hibiscusMaterial
-    stamen_center.material = hibiscusMaterial
-    stamen_top.material = hibiscusMaterial
-    stamen_ring.material = hibiscusMaterial
-    bud_inner.material = hibiscusMaterial
-    bud_outer.material = hibiscusMaterial
+    // petal.material = hibiscusMaterial
+    // stamen_center.material = hibiscusMaterial
+    // stamen_top.material = hibiscusMaterial
+    // stamen_ring.material = hibiscusMaterial
+    // bud_inner.material = hibiscusMaterial
+    // bud_outer.material = hibiscusMaterial
 
 
 
     hibiscus.add(petal)
-    hibiscus.add(stamen_center)
-    hibiscus.add(stamen_top)
-    hibiscus.add(stamen_ring)
+
+    stamen.add(stamen_center)
+    stamen.add(stamen_top)
+    stamen.add(stamen_ring)
+    hibiscus.add(stamen)
+
     // scene.add(bud_inner)
     // scene.add(bud_outer)
 
-
     scene.add(hibiscus)
-    
+
+    stamen.position.z = 0.01
+
+    hibiscus.scale.set(5, 5, 5)
+    hibiscus.rotation.y = Math.PI / 2
+
+ 
 
     
 
