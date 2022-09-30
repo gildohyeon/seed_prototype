@@ -204,7 +204,7 @@ const initial_setting = () => {
 
     //petal
 
-    let petal_count = Math.round(map(Math.random(),0,1,4,6))
+    let petal_count = Math.round(map(Math.random(),0,1,4,5))
 
     petal = new THREE.InstancedMesh(petal_geometry, hibiscusMaterial, petal_count)
 
